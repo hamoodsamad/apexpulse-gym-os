@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Member Portal</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/memberPortal-DKcv0YT5.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-grLgSogJ.js">
+    <link rel="modulepreload" crossorigin href="/assets/layout-BTtqNsx0.js">
+    <link rel="modulepreload" crossorigin href="/assets/modals-DzvRu_L9.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DOmYoC3I.css">
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+        </header>
+
+        <main class="page-content">
+          <section class="surface-card">
+            <div class="section-header">
+              <div>
+                <h2 id="portal-member-name" class="section-title">
+                  Member Profile
+                </h2>
+                <p id="portal-member-code" class="section-subtitle mono"></p>
+              </div>
+              <div class="toolbar-group">
+                <span id="portal-status-badge" class="status-tag status-neutral"
+                  >Loading</span
+                >
+                <span
+                  id="portal-payment-badge"
+                  class="status-tag status-neutral"
+                  >Checking</span
+                >
+              </div>
+            </div>
+
+            <div class="profile-kv-grid">
+              <div class="kv-item">
+                <div class="kv-label">Current Subscription</div>
+                <div id="portal-sub-name" class="kv-value">—</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Expiry Date</div>
+                <div id="portal-sub-expiry" class="kv-value mono">—</div>
+              </div>
+              <div class="kv-item">
+                <div class="kv-label">Phone &amp; Age</div>
+                <div class="kv-value mono">
+                  <span id="portal-member-phone">—</span> ·
+                  <span id="portal-member-age">—</span>
+                </div>
+              </div>
+            </div>
+
+            <form id="portal-contact-form" class="form-grid mt-20">
+              <div class="form-field">
+                <label class="form-label" for="portal-edit-phone"
+                  >Update Phone Number</label
+                >
+                <input
+                  id="portal-edit-phone"
+                  name="phone"
+                  class="form-input"
+                  required
+                />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="portal-edit-age"
+                  >Update Age</label
+                >
+                <input
+                  id="portal-edit-age"
+                  name="age"
+                  type="number"
+                  min="12"
+                  max="110"
+                  class="form-input"
+                  required
+                />
+              </div>
+              <div class="form-field form-field-full">
+                <button type="submit" class="btn btn-secondary btn-sm">
+                  Save Contact Details
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section>
+            <div class="section-header">
+              <div>
+                <h2 class="section-title">Available Packages &amp; Deals</h2>
+                <p class="section-subtitle">
+                  Requests are submitted for Admin payment confirmation and
+                  activation
+                </p>
+              </div>
+            </div>
+            <div id="portal-packages-grid" class="catalog-grid">
+              <div class="empty-state">Loading available packages...</div>
+            </div>
+          </section>
+
+          <section class="two-col-grid">
+            <article class="surface-card">
+              <h2 class="section-title">Subscription History</h2>
+              <div class="table-wrap mt-12">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Package</th>
+                      <th>Duration</th>
+                      <th>Start</th>
+                      <th>Expiry</th>
+                      <th class="col-numeric">Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="portal-subscriptions-body">
+                    <tr>
+                      <td colspan="6" class="empty-state">Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="surface-card">
+              <h2 class="section-title">Payment History</h2>
+              <div class="table-wrap mt-12">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Method</th>
+                      <th class="col-numeric">Amount</th>
+                      <th>Status</th>
+                      <th>Reference</th>
+                    </tr>
+                  </thead>
+                  <tbody id="portal-payments-body">
+                    <tr>
+                      <td colspan="5" class="empty-state">Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </section>
+
+          <section class="surface-card">
+            <h2 class="section-title">My Attendance Check-Ins</h2>
+            <div class="table-wrap mt-12">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Scanner Device</th>
+                    <th>Verification Result</th>
+                  </tr>
+                </thead>
+                <tbody id="portal-attendance-body">
+                  <tr>
+                    <td colspan="3" class="empty-state">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Request Plan Modal -->
+    <div
+      id="request-plan-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="req-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="req-modal-title" class="section-title">
+              Request Subscription Plan
+            </h2>
+            <p id="req-package-name" class="section-subtitle"></p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+        <div class="info-banner">
+          Sensitive payment and membership activations require Administrator
+          approval before taking effect.
+        </div>
+        <form id="request-plan-form" class="form-grid mt-16">
+          <div class="form-field">
+            <label class="form-label" for="req-duration-select">Duration</label>
+            <select
+              id="req-duration-select"
+              name="duration"
+              class="form-select"
+            >
+              <option value="1m">1 Month</option>
+              <option value="3m">3 Months</option>
+              <option value="6m">6 Months</option>
+              <option value="1y">1 Year</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <span class="form-label">Plan Price</span>
+            <div id="req-price-preview" class="kv-value mono">—</div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="req-pay-method"
+              >Payment Method</label
+            >
+            <select
+              id="req-pay-method"
+              name="paymentMethod"
+              class="form-select"
+            >
+              <option value="transfer">Bank Transfer</option>
+              <option value="cash">Cash at Front Desk</option>
+              <option value="card">Card</option>
+              <option value="online">Online</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="req-ref-no"
+              >Payment Reference (Optional)</label
+            >
+            <input id="req-ref-no" name="referenceNo" class="form-input" />
+          </div>
+          <div class="modal-footer form-field-full">
+            <button type="button" class="btn btn-secondary" data-close-modal>
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Submit Request for Approval
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </body>
+</html>

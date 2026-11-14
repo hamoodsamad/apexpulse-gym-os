@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Payments &amp; Renewals</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/payments-D6RBgTCU.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-grLgSogJ.js">
+    <link rel="modulepreload" crossorigin href="/assets/layout-BTtqNsx0.js">
+    <link rel="modulepreload" crossorigin href="/assets/modals-DzvRu_L9.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DOmYoC3I.css">
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+          <div class="topbar-actions">
+            <button
+              id="export-payments-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Export CSV
+            </button>
+            <button
+              id="open-renew-sub-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Renew Subscription
+            </button>
+            <button
+              id="open-assign-sub-btn"
+              type="button"
+              class="btn btn-primary btn-sm"
+            >
+              Assign Plan &amp; Payment
+            </button>
+          </div>
+        </header>
+
+        <main class="page-content">
+          <section class="kpi-grid">
+            <div class="kpi-tile">
+              <span class="kpi-label">Total Collected</span>
+              <span id="pay-kpi-total" class="kpi-value">$0.00</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">This Month</span>
+              <span id="pay-kpi-month" class="kpi-value">$0.00</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">Pending Admin Approval</span>
+              <span id="pay-kpi-pending" class="kpi-value">0</span>
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">Unpaid / Pending Value</span>
+              <span id="pay-kpi-unpaid" class="kpi-value">$0.00</span>
+            </div>
+          </section>
+
+          <section class="surface-card">
+            <div class="toolbar">
+              <div class="toolbar-group">
+                <input
+                  id="payment-search-input"
+                  type="search"
+                  class="form-input"
+                  placeholder="Search member, code, plan, or reference..."
+                  aria-label="Search payments"
+                />
+              </div>
+              <div
+                id="payment-status-filters"
+                class="segmented-control"
+                role="tablist"
+              >
+                <button
+                  type="button"
+                  class="segment-btn active"
+                  data-status="all"
+                >
+                  All
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  data-status="pending_approval"
+                >
+                  Pending Approval
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  data-status="confirmed"
+                >
+                  Confirmed
+                </button>
+                <button type="button" class="segment-btn" data-status="unpaid">
+                  Unpaid
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  data-status="rejected"
+                >
+                  Rejected
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Member</th>
+                    <th>Subscription</th>
+                    <th>Expiry Date</th>
+                    <th>Method</th>
+                    <th class="col-numeric">Amount</th>
+                    <th>Status</th>
+                    <th>Admin Approval</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-table-body">
+                  <tr>
+                    <td colspan="8" class="empty-state">
+                      Loading payment ledger...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Assign New Subscription Modal -->
+    <div
+      id="assign-subscription-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="assign-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="assign-modal-title" class="section-title">
+            Assign Subscription &amp; Record Payment
+          </h2>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+        <form id="assign-subscription-form" class="form-grid">
+          <div class="form-field form-field-full">
+            <label class="form-label" for="assign-member-select">Member</label>
+            <select
+              id="assign-member-select"
+              name="memberId"
+              class="form-select"
+              required
+            ></select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="assign-package-select"
+              >Package</label
+            >
+            <select
+              id="assign-package-select"
+              name="packageId"
+              class="form-select"
+              required
+            ></select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="assign-duration-select"
+              >Duration</label
+            >
+            <select
+              id="assign-duration-select"
+              name="duration"
+              class="form-select"
+            >
+              <option value="1m">1 Month</option>
+              <option value="3m">3 Months</option>
+              <option value="6m">6 Months</option>
+              <option value="1y">1 Year</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="assign-start-date">Start Date</label>
+            <input
+              id="assign-start-date"
+              name="startDate"
+              type="date"
+              class="form-input"
+            />
+          </div>
+          <div class="form-field">
+            <span class="form-label">Configured Package Price</span>
+            <div id="assign-price-preview" class="kv-value mono">—</div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="assign-pay-status"
+              >Payment Status</label
+            >
+            <select
+              id="assign-pay-status"
+              name="paymentStatus"
+              class="form-select"
+            >
+              <option value="paid">Paid &amp; Confirmed</option>
+              <option value="unpaid">Unpaid</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="assign-pay-method"
+              >Payment Method</label
+            >
+            <select
+              id="assign-pay-method"
+              name="paymentMethod"
+              class="form-select"
+            >
+              <option value="cash">Cash</option>
+              <option value="card">Card</option>
+              <option value="transfer">Bank Transfer</option>
+              <option value="online">Online</option>
+            </select>
+          </div>
+          <div class="form-field form-field-full">
+            <label class="form-label" for="assign-ref-no"
+              >Reference Number (Optional)</label
+            >
+            <input id="assign-ref-no" name="referenceNo" class="form-input" />
+          </div>
+          <div class="modal-footer form-field-full">
+            <button type="button" class="btn btn-secondary" data-close-modal>
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Save Subscription &amp; Payment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Renew Subscription Modal -->
+    <div
+      id="renew-subscription-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="renew-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="renew-modal-title" class="section-title">
+            Renew Member Subscription
+          </h2>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+        <form id="renew-subscription-form" class="form-grid">
+          <div class="form-field form-field-full">
+            <label class="form-label" for="renew-subscription-select"
+              >Member Subscription to Extend</label
+            >
+            <select
+              id="renew-subscription-select"
+              name="subscriptionId"
+              class="form-select"
+              required
+            ></select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="renew-duration"
+              >Renewal Duration</label
+            >
+            <select id="renew-duration" name="duration" class="form-select">
+              <option value="1m">1 Month</option>
+              <option value="3m">3 Months</option>
+              <option value="6m">6 Months</option>
+              <option value="1y">1 Year</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="renew-pay-status"
+              >Payment Status</label
+            >
+            <select
+              id="renew-pay-status"
+              name="paymentStatus"
+              class="form-select"
+            >
+              <option value="paid">Paid &amp; Confirmed</option>
+              <option value="unpaid">Unpaid</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="renew-pay-method">Method</label>
+            <select
+              id="renew-pay-method"
+              name="paymentMethod"
+              class="form-select"
+            >
+              <option value="cash">Cash</option>
+              <option value="card">Card</option>
+              <option value="transfer">Bank Transfer</option>
+              <option value="online">Online</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="renew-ref"
+              >Reference (Optional)</label
+            >
+            <input id="renew-ref" name="referenceNo" class="form-input" />
+          </div>
+          <div class="modal-footer form-field-full">
+            <button type="button" class="btn btn-secondary" data-close-modal>
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Renew &amp; Recalculate Expiry
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </body>
+</html>

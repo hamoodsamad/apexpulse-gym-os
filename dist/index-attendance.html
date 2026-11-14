@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Attendance Log</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/attendance-Bcvts_9j.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-grLgSogJ.js">
+    <link rel="modulepreload" crossorigin href="/assets/layout-BTtqNsx0.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DOmYoC3I.css">
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+          <div class="topbar-actions">
+            <button
+              id="export-attendance-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Export CSV
+            </button>
+            <a href="/index-scanner.html" class="btn btn-primary btn-sm"
+              >Open Scanner Terminal</a
+            >
+          </div>
+        </header>
+
+        <main class="page-content">
+          <section class="surface-card">
+            <div class="toolbar">
+              <div class="toolbar-group">
+                <input
+                  id="attendance-search-input"
+                  type="search"
+                  class="form-input"
+                  placeholder="Search member, code, or scanner..."
+                  aria-label="Search attendance"
+                />
+                <input
+                  id="attendance-date-input"
+                  type="date"
+                  class="form-input"
+                  aria-label="Filter by date"
+                />
+              </div>
+              <div
+                id="attendance-result-filters"
+                class="segmented-control"
+                role="tablist"
+              >
+                <button
+                  type="button"
+                  class="segment-btn active"
+                  data-result="all"
+                >
+                  All
+                </button>
+                <button type="button" class="segment-btn" data-result="valid">
+                  Valid
+                </button>
+                <button type="button" class="segment-btn" data-result="expired">
+                  Expired
+                </button>
+                <button type="button" class="segment-btn" data-result="unpaid">
+                  Unpaid
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  data-result="suspended"
+                >
+                  Suspended
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Member</th>
+                    <th>Subscription</th>
+                    <th>Expiry Date</th>
+                    <th>Hardware Device</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-table-body">
+                  <tr>
+                    <td colspan="6" class="empty-state">
+                      Loading attendance records...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

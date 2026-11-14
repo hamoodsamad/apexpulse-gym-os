@@ -1,0 +1,13 @@
+import{r as S,a as _,s as f}from"./toast-grLgSogJ.js";import{i as y,d as h,f as L,e as n,a as A,b as E,c as g,s as $}from"./layout-BTtqNsx0.js";let m=[],o="all",p="",l="";function d(){const a=document.getElementById("attendance-table-body");if(!a)return;const i=p.trim().toLowerCase(),c=m.filter(e=>{const r=o==="all"||e.verification_result===o,t=!l||String(e.scanned_at||"").startsWith(l),s=!i||String(e.member_name||"").toLowerCase().includes(i)||String(e.member_code||"").toLowerCase().includes(i)||String(e.device_label||"").toLowerCase().includes(i);return r&&t&&s});if(c.length===0){a.innerHTML='<tr><td colspan="6" class="empty-state">No attendance check-ins match your filters.</td></tr>';return}a.innerHTML=c.map(e=>`
+      <tr>
+        <td class="mono">${n(A(String(e.scanned_at)))}</td>
+        <td>
+          <div><strong>${n(e.member_name)}</strong></div>
+          <div class="section-subtitle mono">${n(e.member_code)} · ${n(e.phone||"")}</div>
+        </td>
+        <td>${n(e.package_name||"None")}</td>
+        <td class="mono">${e.expiry_date?n(E(String(e.expiry_date))):"—"}</td>
+        <td>${n(e.device_label)} <span class="section-subtitle">(${n(g(String(e.verification_method)))})</span></td>
+        <td><span class="${$(String(e.verification_result))}">${n(g(String(e.verification_result)))}</span></td>
+      </tr>
+    `).join("")}async function v(){try{m=await L(),d()}catch(a){f(a instanceof Error?a.message:"Unable to load attendance logs.","error")}}async function T(){var i,c,e,r;const a=await S("admin");a&&(y({user:a,activeNavKey:"attendance",pageTitle:"Facility Attendance & Biometric Audit Log"}),await v(),_.subscribe(t=>{t.type==="attendance:recorded"&&v()}),(i=document.getElementById("attendance-search-input"))==null||i.addEventListener("input",t=>{p=t.target.value,d()}),(c=document.getElementById("attendance-date-input"))==null||c.addEventListener("change",t=>{l=t.target.value,d()}),(e=document.getElementById("attendance-result-filters"))==null||e.addEventListener("click",t=>{var u;const s=t.target.closest("[data-result]");if(s){o=s.dataset.result||"all";for(const b of((u=s.parentElement)==null?void 0:u.querySelectorAll(".segment-btn"))||[])b.classList.remove("active");s.classList.add("active"),d()}}),(r=document.getElementById("export-attendance-btn"))==null||r.addEventListener("click",()=>{h(`gym-attendance-${new Date().toISOString().slice(0,10)}.csv`,["Scanned At","Member Code","Member Name","Plan","Device","Method","Result"],m.map(t=>[String(t.scanned_at||""),String(t.member_code||""),String(t.member_name||""),String(t.package_name||""),String(t.device_label||""),String(t.verification_method||""),String(t.verification_result||"")])),f("Attendance log exported","success")}))}T();

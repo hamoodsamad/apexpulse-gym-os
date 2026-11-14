@@ -33,7 +33,6 @@ __export(vercel_entry_exports, {
   default: () => handler
 });
 module.exports = __toCommonJS(vercel_entry_exports);
-var import_config = require("dotenv/config");
 var import_express2 = __toESM(require("express"), 1);
 
 // server/db.ts
