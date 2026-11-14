@@ -15978,7 +15978,7 @@ var require_side_channel_map = __commonJS({
     var $mapHas = callBound("Map.prototype.has", true);
     var $mapDelete = callBound("Map.prototype.delete", true);
     var $mapSize = callBound("Map.prototype.size", true);
-    module2.exports = !!$Map && /** @type {Exclude<import('.'), false>} */
+    module2.exports = !!$Map && /** @type {Exclude<import('./[...path]'), false>} */
     function getSideChannelMap() {
       var $m;
       var channel = {
@@ -16035,7 +16035,7 @@ var require_side_channel_weakmap = __commonJS({
     var $weakMapHas = callBound("WeakMap.prototype.has", true);
     var $weakMapDelete = callBound("WeakMap.prototype.delete", true);
     module2.exports = $WeakMap ? (
-      /** @type {Exclude<import('.'), false>} */
+      /** @type {Exclude<import('./[...path]'), false>} */
       function getSideChannelWeakMap() {
         var $wm;
         var $m;
