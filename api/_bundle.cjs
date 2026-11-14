@@ -15978,7 +15978,7 @@ var require_side_channel_map = __commonJS({
     var $mapHas = callBound("Map.prototype.has", true);
     var $mapDelete = callBound("Map.prototype.delete", true);
     var $mapSize = callBound("Map.prototype.size", true);
-    module2.exports = !!$Map && /** @type {Exclude<import('./[...path]'), false>} */
+    module2.exports = !!$Map && /** @type {Exclude<import('.'), false>} */
     function getSideChannelMap() {
       var $m;
       var channel = {
@@ -16035,7 +16035,7 @@ var require_side_channel_weakmap = __commonJS({
     var $weakMapHas = callBound("WeakMap.prototype.has", true);
     var $weakMapDelete = callBound("WeakMap.prototype.delete", true);
     module2.exports = $WeakMap ? (
-      /** @type {Exclude<import('./[...path]'), false>} */
+      /** @type {Exclude<import('.'), false>} */
       function getSideChannelWeakMap() {
         var $wm;
         var $m;
@@ -60973,6 +60973,13 @@ function getApp() {
 }
 async function handler(req, res) {
   try {
+    const parsed = new URL(req.url || "/", "http://localhost");
+    const rewrittenPath = parsed.searchParams.get("__path");
+    if (rewrittenPath !== null) {
+      parsed.searchParams.delete("__path");
+      const qs = parsed.searchParams.toString();
+      req.url = `/api/${rewrittenPath}${qs ? `?${qs}` : ""}`;
+    }
     if (!initPromise) {
       initPromise = initDatabase().catch((err) => {
         initPromise = null;
