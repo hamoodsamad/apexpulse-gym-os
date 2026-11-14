@@ -1,4 +1,4 @@
-import{r as $,a as h,s as l}from"./toast-grLgSogJ.js";import{c as w,v as S,g as E,b as B}from"./biometricService-0xo69AE6.js";import{i as A,o as D,e as a,f as I,a as y,s as g,c as k,m as T,b as H}from"./layout-BTtqNsx0.js";let u=[];function p(e){var r,c;const n=document.getElementById("scan-result-panel");if(!n)return;let s="result-danger",t="✕";e.verificationResult==="valid"?(s="result-valid",t="✓"):e.verificationResult==="suspended"&&(s="result-warning",t="!"),n.innerHTML=`
+import{r as $,a as h,s as l}from"./toast-WcZTWCaQ.js";import{c as w,v as S,g as E,b as B}from"./biometricService-HW8B33Eh.js";import{i as A,o as D,e as a,f as I,a as y,s as g,c as k,m as T,b as H}from"./layout-Bo-xb1TQ.js";let u=[];function p(e){var r,c;const n=document.getElementById("scan-result-panel");if(!n)return;let s="result-danger",t="✕";e.verificationResult==="valid"?(s="result-valid",t="✓"):e.verificationResult==="suspended"&&(s="result-warning",t="!"),n.innerHTML=`
     <div class="scan-result-banner ${s}">
       <div class="toolbar-group">
         <span class="scan-status-icon" aria-hidden="true">${t}</span>

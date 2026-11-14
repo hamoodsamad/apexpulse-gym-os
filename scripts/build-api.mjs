@@ -6,11 +6,11 @@ await build({
   platform: "node",
   target: "node20",
   format: "cjs",
-  packages: "external",
-  outfile: "api/index.cjs",
+  external: ["better-sqlite3", "pg-native"],
+  outfile: "api/_bundle.cjs",
   footer: {
     js: "if (module.exports && module.exports.default) { module.exports = module.exports.default; }",
   },
 });
 
-console.log("Built api/index.cjs successfully.");
+console.log("Built api/_bundle.cjs successfully.");
