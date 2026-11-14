@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Sign In</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/login-B1TjMzxK.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-WcZTWCaQ.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DXIoNCN9.css">
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-hero-panel">
+        <div>
+          <div class="sidebar-brand">ApexPulse Gym OS</div>
+        </div>
+        <div>
+          <h1>Facility Operations, Biometric Access &amp; Member Billing</h1>
+          <p class="mt-16">
+            Real-time multi-device synchronization across front-desk biometric
+            scanners, administrator terminals, and member self-service portals.
+          </p>
+        </div>
+        <div id="db-engine-note" class="sidebar-user-meta">
+          Connecting to cloud database...
+        </div>
+      </section>
+
+      <section class="auth-form-panel">
+        <div class="auth-card">
+          <div
+            id="auth-error-box"
+            class="error-banner hidden"
+            role="alert"
+          ></div>
+
+          <section id="admin-setup-section" class="hidden">
+            <h2 class="section-title">Initialize Facility Administrator</h2>
+            <p class="section-subtitle mt-12">
+              Create the primary Administrator account to configure services,
+              packages, members, and biometric hardware.
+            </p>
+            <form id="admin-setup-form" class="form-grid mt-16">
+              <div class="form-field form-field-full">
+                <label class="form-label" for="setup-name"
+                  >Administrator Full Name</label
+                >
+                <input
+                  id="setup-name"
+                  name="fullName"
+                  class="form-input"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+              <div class="form-field form-field-full">
+                <label class="form-label" for="setup-email"
+                  >Administrator Email</label
+                >
+                <input
+                  id="setup-email"
+                  name="email"
+                  type="email"
+                  class="form-input"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+              <div class="form-field form-field-full">
+                <label class="form-label" for="setup-password"
+                  >Password (minimum 8 characters)</label
+                >
+                <input
+                  id="setup-password"
+                  name="password"
+                  type="password"
+                  minlength="8"
+                  class="form-input"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+              <div class="form-field form-field-full">
+                <button type="submit" class="btn btn-primary">
+                  Create Administrator Account
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section id="auth-tabs-section" class="hidden">
+            <div class="segmented-control" role="tablist">
+              <button
+                id="tab-login-btn"
+                type="button"
+                class="segment-btn active"
+                role="tab"
+              >
+                Sign In
+              </button>
+              <button
+                id="tab-register-btn"
+                type="button"
+                class="segment-btn"
+                role="tab"
+              >
+                Member Sign Up
+              </button>
+            </div>
+
+            <div id="login-panel" class="mt-16">
+              <h2 class="section-title">Sign In to Your Account</h2>
+              <p class="section-subtitle">
+                Administrators and Members sign in using their registered
+                credentials.
+              </p>
+              <form id="login-form" class="form-grid mt-16">
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="login-email"
+                    >Email Address</label
+                  >
+                  <input
+                    id="login-email"
+                    name="email"
+                    type="email"
+                    class="form-input"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="login-password"
+                    >Password</label
+                  >
+                  <input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    class="form-input"
+                    required
+                    autocomplete="current-password"
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <button type="submit" class="btn btn-primary">Sign In</button>
+                </div>
+              </form>
+            </div>
+
+            <div id="register-panel" class="hidden mt-16">
+              <h2 class="section-title">Create Member Account</h2>
+              <p class="section-subtitle">
+                View your active plan, expiry dates, payment history, and
+                available gym deals.
+              </p>
+              <form id="register-form" class="form-grid mt-16">
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="reg-name">Full Name</label>
+                  <input
+                    id="reg-name"
+                    name="fullName"
+                    class="form-input"
+                    required
+                    autocomplete="name"
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="reg-email"
+                    >Email Address</label
+                  >
+                  <input
+                    id="reg-email"
+                    name="email"
+                    type="email"
+                    class="form-input"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="reg-phone">Phone Number</label>
+                  <input
+                    id="reg-phone"
+                    name="phone"
+                    type="tel"
+                    class="form-input"
+                    required
+                    autocomplete="tel"
+                  />
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="reg-age">Age</label>
+                  <input
+                    id="reg-age"
+                    name="age"
+                    type="number"
+                    min="12"
+                    max="110"
+                    class="form-input"
+                    required
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="reg-password"
+                    >Password (min 8 characters)</label
+                  >
+                  <input
+                    id="reg-password"
+                    name="password"
+                    type="password"
+                    minlength="8"
+                    class="form-input"
+                    required
+                    autocomplete="new-password"
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <button type="submit" class="btn btn-primary">
+                    Register Member Account
+                  </button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

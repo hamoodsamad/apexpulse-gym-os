@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Fingerprint Scanner Terminal</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <link rel="stylesheet" href="/src/css/tokens.css" />
+    <link rel="stylesheet" href="/src/css/base.css" />
+    <link rel="stylesheet" href="/src/css/components.css" />
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+          <div class="topbar-actions">
+            <a href="/index-members.html" class="btn btn-secondary btn-sm"
+              >Enroll Fingerprints</a
+            >
+          </div>
+        </header>
+
+        <main class="page-content">
+          <div id="hardware-capability-status" class="info-banner">
+            Detecting biometric hardware capabilities...
+          </div>
+
+          <section class="scanner-layout">
+            <article class="surface-card">
+              <h2 class="section-title">Biometric Hardware Capture</h2>
+              <p class="section-subtitle">
+                Verify member access using genuine biometric hardware sensors.
+              </p>
+
+              <div class="form-grid mt-16">
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="scanner-device-label"
+                    >Terminal Label</label
+                  >
+                  <input
+                    id="scanner-device-label"
+                    class="form-input"
+                    value="Main Entrance Turnstile"
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="scanner-member-select"
+                    >Target Member (Optional for 1:1 WebAuthn)</label
+                  >
+                  <select
+                    id="scanner-member-select"
+                    class="form-select"
+                  ></select>
+                </div>
+                <div class="form-field form-field-full">
+                  <button
+                    id="scan-webauthn-btn"
+                    type="button"
+                    class="btn btn-primary"
+                  >
+                    Scan via WebAuthn Biometric Sensor
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-20">
+                <h3 class="section-title">Dedicated USB Scanner SDK</h3>
+                <div class="form-grid mt-12">
+                  <div class="form-field form-field-full">
+                    <label class="form-label" for="terminal-sdk-provider"
+                      >Hardware SDK Driver</label
+                    >
+                    <select id="terminal-sdk-provider" class="form-select">
+                      <option value="secugen">SecuGen WebAPI</option>
+                      <option value="zkteco">ZKTeco BioOnline</option>
+                      <option value="digitalpersona">
+                        DigitalPersona WebSDK
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-field form-field-full">
+                    <label class="form-label" for="terminal-sdk-endpoint"
+                      >Local SDK Endpoint</label
+                    >
+                    <input
+                      id="terminal-sdk-endpoint"
+                      class="form-input mono"
+                      value="https://localhost:8443/SGIFPCapture"
+                    />
+                  </div>
+                  <div class="form-field form-field-full">
+                    <button
+                      id="scan-sdk-btn"
+                      type="button"
+                      class="btn btn-secondary"
+                    >
+                      Capture &amp; Verify via USB Scanner SDK
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="surface-card">
+              <div class="section-header">
+                <div>
+                  <h2 class="section-title">Verification Result</h2>
+                  <p class="section-subtitle">
+                    Automatic member identification, subscription validation,
+                    and attendance check-in
+                  </p>
+                </div>
+              </div>
+
+              <div id="scan-result-panel">
+                <div class="empty-state">
+                  Ready for fingerprint capture. Place an enrolled finger on the
+                  hardware scanner to verify membership and log attendance.
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section class="surface-card">
+            <div class="section-header">
+              <div>
+                <h2 class="section-title">Live Check-In Stream</h2>
+                <p class="section-subtitle">
+                  Synchronized across all connected front-desk and admin devices
+                </p>
+              </div>
+              <a href="/index-attendance.html" class="btn btn-secondary btn-sm"
+                >Full Attendance Log</a
+              >
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Member</th>
+                    <th>Plan</th>
+                    <th>Scanner Device</th>
+                    <th>Verification Result</th>
+                  </tr>
+                </thead>
+                <tbody id="scanner-recent-body">
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      Loading recent scans...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="/src/js/pages/scanner.ts"></script>
+  </body>
+</html>

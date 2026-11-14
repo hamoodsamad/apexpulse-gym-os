@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Members</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/members-DhAf_TeI.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-WcZTWCaQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/biometricService-HW8B33Eh.js">
+    <link rel="modulepreload" crossorigin href="/assets/layout-Bo-xb1TQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/modals-DzvRu_L9.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DXIoNCN9.css">
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+          <div class="topbar-actions">
+            <button
+              id="export-members-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Export CSV
+            </button>
+            <button
+              id="open-register-modal-btn"
+              type="button"
+              class="btn btn-primary btn-sm"
+            >
+              Register Member
+            </button>
+          </div>
+        </header>
+
+        <main class="page-content">
+          <section class="surface-card">
+            <div class="toolbar">
+              <div class="toolbar-group">
+                <input
+                  id="member-search-input"
+                  type="search"
+                  class="form-input"
+                  placeholder="Search name, code, phone, or email..."
+                  aria-label="Search members"
+                />
+              </div>
+              <div
+                id="member-status-filters"
+                class="segmented-control"
+                role="tablist"
+              >
+                <button
+                  type="button"
+                  class="segment-btn active"
+                  data-status="all"
+                >
+                  All
+                </button>
+                <button type="button" class="segment-btn" data-status="active">
+                  Active
+                </button>
+                <button type="button" class="segment-btn" data-status="expired">
+                  Expired
+                </button>
+                <button
+                  type="button"
+                  class="segment-btn"
+                  data-status="suspended"
+                >
+                  Suspended
+                </button>
+                <button type="button" class="segment-btn" data-status="pending">
+                  Pending
+                </button>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Member</th>
+                    <th>Phone</th>
+                    <th class="col-numeric">Age</th>
+                    <th>Subscription</th>
+                    <th>Expiry Date</th>
+                    <th>Status &amp; Biometrics</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="members-table-body">
+                  <tr>
+                    <td colspan="8" class="empty-state">Loading members...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Register Member Modal -->
+    <div
+      id="register-member-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="register-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="register-modal-title" class="section-title">
+            Register New Gym Member
+          </h2>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+        <form id="register-member-form" class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="reg-m-name">Full Name</label>
+            <input
+              id="reg-m-name"
+              name="fullName"
+              class="form-input"
+              required
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-m-email">Email Address</label>
+            <input
+              id="reg-m-email"
+              name="email"
+              type="email"
+              class="form-input"
+              required
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-m-phone">Phone Number</label>
+            <input
+              id="reg-m-phone"
+              name="phone"
+              type="tel"
+              class="form-input"
+              required
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-m-age">Age</label>
+            <input
+              id="reg-m-age"
+              name="age"
+              type="number"
+              min="12"
+              max="110"
+              class="form-input"
+              required
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-m-password"
+              >Member Portal Password (Optional)</label
+            >
+            <input
+              id="reg-m-password"
+              name="accountPassword"
+              type="password"
+              minlength="8"
+              class="form-input"
+              placeholder="Min 8 chars for portal login"
+            />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="reg-m-notes">Notes (Optional)</label>
+            <input id="reg-m-notes" name="notes" class="form-input" />
+          </div>
+          <div class="form-field form-field-full">
+            <label class="form-label" for="reg-package-select"
+              >Initial Subscription Plan</label
+            >
+            <select
+              id="reg-package-select"
+              name="packageId"
+              class="form-select"
+            ></select>
+          </div>
+          <div
+            id="reg-subscription-fields"
+            class="form-field-full form-grid hidden"
+          >
+            <div class="form-field">
+              <label class="form-label" for="reg-duration-select"
+                >Duration</label
+              >
+              <select
+                id="reg-duration-select"
+                name="duration"
+                class="form-select"
+              >
+                <option value="1m">1 Month</option>
+                <option value="3m">3 Months</option>
+                <option value="6m">6 Months</option>
+                <option value="1y">1 Year</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="reg-start-date">Start Date</label>
+              <input
+                id="reg-start-date"
+                name="startDate"
+                type="date"
+                class="form-input"
+              />
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="reg-payment-status"
+                >Payment Status</label
+              >
+              <select
+                id="reg-payment-status"
+                name="paymentStatus"
+                class="form-select"
+              >
+                <option value="paid">Paid &amp; Confirmed</option>
+                <option value="unpaid">Unpaid (Pending Collection)</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="reg-payment-method"
+                >Payment Method</label
+              >
+              <select
+                id="reg-payment-method"
+                name="paymentMethod"
+                class="form-select"
+              >
+                <option value="cash">Cash</option>
+                <option value="card">Card</option>
+                <option value="transfer">Bank Transfer</option>
+                <option value="online">Online</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="reg-ref-no"
+                >Reference Number (Optional)</label
+              >
+              <input id="reg-ref-no" name="referenceNo" class="form-input" />
+            </div>
+            <div class="form-field">
+              <span class="form-label">Calculated Plan Price</span>
+              <div id="reg-price-preview" class="kv-value mono">—</div>
+            </div>
+          </div>
+          <div class="modal-footer form-field-full">
+            <button type="button" class="btn btn-secondary" data-close-modal>
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Register Member
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Member Profile & History Modal -->
+    <div
+      id="member-profile-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="profile-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <h2 id="profile-modal-title" class="section-title">
+            Member Profile &amp; Audit History
+          </h2>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+        <div id="member-profile-content"></div>
+      </div>
+    </div>
+
+    <!-- Biometric Hardware Enrollment Modal -->
+    <div
+      id="biometric-enroll-modal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="bio-modal-title"
+    >
+      <div class="modal-panel">
+        <div class="modal-header">
+          <div>
+            <h2 id="bio-modal-title" class="section-title">
+              Hardware Fingerprint Enrollment
+            </h2>
+            <p id="bio-modal-member-name" class="section-subtitle"></p>
+          </div>
+          <button
+            type="button"
+            class="btn btn-secondary btn-sm"
+            data-close-modal
+          >
+            Close
+          </button>
+        </div>
+
+        <div id="bio-capability-note" class="info-banner">
+          Checking biometric hardware...
+        </div>
+
+        <div class="form-grid mt-16">
+          <div class="form-field form-field-full">
+            <label class="form-label" for="bio-device-label"
+              >Scanner / Terminal Label</label
+            >
+            <input
+              id="bio-device-label"
+              class="form-input"
+              value="Front Desk Fingerprint Reader"
+            />
+          </div>
+          <div class="form-field form-field-full">
+            <button
+              id="enroll-webauthn-btn"
+              type="button"
+              class="btn btn-primary"
+            >
+              Enroll via WebAuthn Hardware Sensor (Touch ID / Windows Hello /
+              FIDO2 Key)
+            </button>
+          </div>
+        </div>
+
+        <div class="surface-card mt-16">
+          <h3 class="section-title">Dedicated USB Scanner SDK Bridge</h3>
+          <p class="section-subtitle">
+            Connect directly to SecuGen WebAPI, ZKTeco BioOnline, or
+            DigitalPersona local driver service.
+          </p>
+          <div class="form-grid mt-12">
+            <div class="form-field">
+              <label class="form-label" for="sdk-provider-select"
+                >Scanner SDK Provider</label
+              >
+              <select id="sdk-provider-select" class="form-select">
+                <option value="secugen">SecuGen WebAPI (SGIFP)</option>
+                <option value="zkteco">ZKTeco BioOnline</option>
+                <option value="digitalpersona">DigitalPersona WebSDK</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="sdk-endpoint-input"
+                >Local SDK Endpoint URL</label
+              >
+              <input
+                id="sdk-endpoint-input"
+                class="form-input mono"
+                value="https://localhost:8443/SGIFPCapture"
+              />
+            </div>
+            <div class="form-field form-field-full">
+              <button
+                id="enroll-sdk-btn"
+                type="button"
+                class="btn btn-secondary"
+              >
+                Capture &amp; Enroll via USB Scanner SDK
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-20">
+          <h3 class="section-title">Enrolled Hardware Credentials</h3>
+          <div id="enrolled-biometrics-list" class="breakdown-list mt-12"></div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

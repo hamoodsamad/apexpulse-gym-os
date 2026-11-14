@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ApexPulse Gym OS — Admin Dashboard</title>
+    <meta
+      name="description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:title" content="ApexPulse Gym OS" />
+    <meta
+      property="og:description"
+      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
+    />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
+    />
+    <script type="module" crossorigin src="/assets/dashboard-DuIcrWlr.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/toast-WcZTWCaQ.js">
+    <link rel="modulepreload" crossorigin href="/assets/layout-Bo-xb1TQ.js">
+    <link rel="stylesheet" crossorigin href="/assets/toast-DXIoNCN9.css">
+    <link rel="stylesheet" crossorigin href="/assets/dashboard-Bmlz7E3V.css">
+  </head>
+  <body>
+    <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+    <div class="app-shell">
+      <aside id="app-sidebar" class="sidebar"></aside>
+      <div class="main-viewport">
+        <header class="topbar">
+          <div id="topbar-left" class="topbar-left"></div>
+          <div class="topbar-actions">
+            <button
+              id="refresh-dashboard-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Refresh
+            </button>
+            <button
+              id="export-report-btn"
+              type="button"
+              class="btn btn-primary btn-sm"
+            >
+              Export Report CSV
+            </button>
+          </div>
+        </header>
+
+        <main class="page-content">
+          <section class="kpi-grid" aria-label="Facility key metrics">
+            <div class="kpi-tile">
+              <span class="kpi-label">Total Members</span>
+              <span id="kpi-total-members" class="kpi-value">0</span>
+              <span id="kpi-members-breakdown" class="kpi-meta"
+                >0 active · 0 expired · 0 suspended</span
+              >
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">Monthly Revenue</span>
+              <span id="kpi-month-revenue" class="kpi-value">$0.00</span>
+              <span id="kpi-total-revenue" class="kpi-meta"
+                >Total collected: $0.00</span
+              >
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">Today's Check-Ins</span>
+              <span id="kpi-today-checkins" class="kpi-value">0</span>
+              <span id="kpi-valid-checkins" class="kpi-meta"
+                >0 valid entries today</span
+              >
+            </div>
+            <div class="kpi-tile">
+              <span class="kpi-label">Pending Approvals</span>
+              <span id="kpi-pending-approvals" class="kpi-value">0</span>
+              <span id="kpi-unpaid-amount" class="kpi-meta"
+                >Unpaid / Pending: $0.00</span
+              >
+            </div>
+          </section>
+
+          <section class="two-col-grid">
+            <article class="surface-card">
+              <div class="section-header">
+                <div>
+                  <h2 class="section-title">Revenue (Last 6 Months)</h2>
+                  <p class="section-subtitle">
+                    Confirmed payments across all plans and custom deals
+                  </p>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap">
+                <canvas id="revenue-chart-canvas" class="chart-canvas"></canvas>
+              </div>
+              <div class="legend-row">
+                <span class="legend-item"
+                  ><span class="legend-swatch swatch-emerald"></span>Confirmed
+                  Revenue</span
+                >
+              </div>
+            </article>
+
+            <article class="surface-card">
+              <div class="section-header">
+                <div>
+                  <h2 class="section-title">Attendance (Last 14 Days)</h2>
+                  <p class="section-subtitle">
+                    Hardware biometric entry validations vs denied attempts
+                  </p>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap">
+                <canvas
+                  id="attendance-chart-canvas"
+                  class="chart-canvas"
+                ></canvas>
+              </div>
+              <div class="legend-row">
+                <span class="legend-item"
+                  ><span class="legend-swatch swatch-green"></span>Valid
+                  Entries</span
+                >
+                <span class="legend-item"
+                  ><span class="legend-swatch swatch-crimson"></span>Expired /
+                  Unpaid / Suspended</span
+                >
+              </div>
+            </article>
+          </section>
+
+          <section class="two-col-grid">
+            <article class="surface-card">
+              <div class="section-header">
+                <div>
+                  <h2 class="section-title">
+                    Upcoming Expirations (Next 14 Days)
+                  </h2>
+                  <p class="section-subtitle">
+                    Members requiring renewal follow-up
+                  </p>
+                </div>
+                <a href="/index-payments.html" class="btn btn-secondary btn-sm"
+                  >Manage Renewals</a
+                >
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Member</th>
+                      <th>Package</th>
+                      <th>Expiry Date</th>
+                      <th class="col-numeric">Remaining</th>
+                    </tr>
+                  </thead>
+                  <tbody id="upcoming-expirations-body">
+                    <tr>
+                      <td colspan="5" class="empty-state">
+                        Loading expirations...
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="surface-card">
+              <div class="section-header">
+                <div>
+                  <h2 class="section-title">Active Subscription Breakdown</h2>
+                  <p class="section-subtitle">
+                    Current active members by package
+                  </p>
+                </div>
+                <a href="/index-packages.html" class="btn btn-secondary btn-sm"
+                  >Configure Plans</a
+                >
+              </div>
+              <div id="package-breakdown-list" class="breakdown-list">
+                <div class="empty-state">Loading plan distribution...</div>
+              </div>
+            </article>
+          </section>
+
+          <section class="surface-card">
+            <div class="section-header">
+              <div>
+                <h2 class="section-title">Recent Registrations</h2>
+                <p class="section-subtitle">
+                  Newest members added across connected devices
+                </p>
+              </div>
+              <a href="/index-members.html" class="btn btn-secondary btn-sm"
+                >View All Members</a
+              >
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Code</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Registered</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-registrations-body">
+                  <tr>
+                    <td colspan="5" class="empty-state">
+                      Loading registrations...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
