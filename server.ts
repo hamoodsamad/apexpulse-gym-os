@@ -25,7 +25,7 @@ async function startLocalServer(): Promise<void> {
 
   app.get("/", async (req, res, next) => {
     try {
-      const htmlPath = path.resolve(process.cwd(), "index-login.html");
+      const htmlPath = path.resolve(process.cwd(), "index-dashboard.html");
       const rawHtml = await fs.readFile(htmlPath, "utf-8");
       const transformed = await vite.transformIndexHtml(
         req.originalUrl,

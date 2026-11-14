@@ -429,6 +429,115 @@ export function createApiRouter(): Router {
       })),
     });
   });
+  // Instant Portfolio Demo Access (Admin View or Member View)
+  router.post("/auth/demo", async (req, res) => {
+    const { role } = (req.body || {}) as { role?: "admin" | "member" };
+    const targetRole = role === "member" ? "member" : "admin";
+
+    if (targetRole === "admin") {
+      let adminUser = await queryOne<DbUser>(
+        `SELECT * FROM users WHERE role = 'admin' ORDER BY created_at ASC LIMIT 1`,
+      );
+      if (!adminUser) {
+        const userId = `usr_${crypto.randomUUID().slice(0, 12)}`;
+        const passwordHash = await hashPassword("DemoAdmin123!");
+        await execute(
+          "INSERT INTO users (id, email, password_hash, role, full_name, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+          [
+            userId,
+            "admin@apexpulse.gym",
+            passwordHash,
+            "admin",
+            "Facility Administrator (Demo)",
+            nowIso(),
+          ],
+        );
+        adminUser = await queryOne<DbUser>("SELECT * FROM users WHERE id = ?", [
+          userId,
+        ]);
+      }
+
+      if (!adminUser) {
+        res
+          .status(500)
+          .json({ error: "Unable to initialize demo administrator session." });
+        return;
+      }
+
+      const payload = {
+        userId: adminUser.id,
+        email: adminUser.email,
+        role: "admin" as const,
+        fullName: adminUser.full_name,
+        memberId: null,
+      };
+      const token = signAuthToken(payload);
+      setAuthCookie(res, token);
+      res.json({ token, user: payload });
+      return;
+    }
+
+    // Member Demo View
+    let memberUser = await queryOne<DbUser>(
+      `SELECT * FROM users WHERE role = 'member' ORDER BY created_at ASC LIMIT 1`,
+    );
+    let linkedMember = memberUser
+      ? await queryOne<DbMember>(
+          "SELECT * FROM members WHERE user_id = ? OR email = ?",
+          [memberUser.id, memberUser.email],
+        )
+      : null;
+
+    if (!memberUser || !linkedMember) {
+      const anyMember = await queryOne<DbMember>(
+        "SELECT * FROM members ORDER BY created_at ASC LIMIT 1",
+      );
+      if (anyMember) {
+        if (!memberUser) {
+          const userId = `usr_${crypto.randomUUID().slice(0, 12)}`;
+          const hash = await hashPassword("DemoMember123!");
+          await execute(
+            "INSERT INTO users (id, email, password_hash, role, full_name, created_at) VALUES (?, ?, ?, ?, ?, ?)",
+            [
+              userId,
+              anyMember.email,
+              hash,
+              "member",
+              anyMember.full_name,
+              nowIso(),
+            ],
+          );
+          memberUser = await queryOne<DbUser>(
+            "SELECT * FROM users WHERE id = ?",
+            [userId],
+          );
+        }
+        if (memberUser && !anyMember.user_id) {
+          await execute("UPDATE members SET user_id = ? WHERE id = ?", [
+            memberUser.id,
+            anyMember.id,
+          ]);
+        }
+        linkedMember = anyMember;
+      }
+    }
+
+    if (!memberUser || !linkedMember) {
+      res.status(404).json({ error: "No demo member profile available yet." });
+      return;
+    }
+
+    const payload = {
+      userId: memberUser.id,
+      email: memberUser.email,
+      role: "member" as const,
+      fullName: memberUser.full_name,
+      memberId: linkedMember.id,
+    };
+    const token = signAuthToken(payload);
+    setAuthCookie(res, token);
+    res.json({ token, user: payload });
+  });
 
   router.post("/services", requireAuth, requireAdmin, async (req, res) => {
     const { name, description } = req.body as {

@@ -9,7 +9,7 @@
     },
     {
       "source": "/",
-      "destination": "/index-login.html"
+      "destination": "/index-dashboard.html"
     }
   ]
 }

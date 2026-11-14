@@ -670,3 +670,93 @@ textarea:focus-visible {
   font-size: 28px;
   line-height: 1.25;
 }
+.auth-hero-panel h1 {
+  color: #ffffff;
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.surface-card,
+.kpi-tile {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.portfolio-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background-color: rgba(15, 118, 110, 0.18);
+  border: 1px solid rgba(20, 184, 166, 0.35);
+  color: #99f6e4;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  margin: 12px 12px 0;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+
+.portfolio-back-link:hover {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.role-switcher-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background-color: var(--bg-subtle);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+}
+
+.role-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  padding: 5px 11px;
+  min-height: 30px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.role-switch-btn.active {
+  background-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.topbar-portfolio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  min-height: 34px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-strong);
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.topbar-portfolio-btn:hover {
+  background-color: var(--bg-subtle);
+}
+
+@media (max-width: 720px) {
+  .topbar-portfolio-btn {
+    display: none;
+  }
+}

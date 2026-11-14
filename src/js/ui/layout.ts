@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   ClipboardCheck,
   CreditCard,
   Fingerprint,
@@ -6,14 +7,19 @@ import {
   LogOut,
   Menu,
   Package,
+  Shield,
+  User,
   UserCheck,
   Users,
   createElement,
 } from "lucide";
 import type { AuthUser } from "../types.ts";
-import { logoutAccount } from "../services/authService.ts";
+import { logoutAccount, switchViewMode } from "../services/authService.ts";
 import { realtimeClient } from "../services/realtimeClient.ts";
 import { escapeHtml } from "../utils/formatters.ts";
+
+const PORTFOLIO_URL =
+  "https://my-portfolio-czuhuqnne-hamoodsamad0321-6526.vercel.app";
 
 interface NavLinkDef {
   href: string;
@@ -91,6 +97,17 @@ export function initAppShell(options: {
     brand.textContent = "ApexPulse Gym OS";
     topGroup.appendChild(brand);
 
+    const backLink = document.createElement("a");
+    backLink.href = PORTFOLIO_URL;
+    backLink.className = "portfolio-back-link";
+    backLink.appendChild(
+      createElement(ArrowLeft, { class: "nav-icon", "aria-hidden": "true" }),
+    );
+    const backLabel = document.createElement("span");
+    backLabel.textContent = "Back to Portfolio";
+    backLink.appendChild(backLabel);
+    topGroup.appendChild(backLink);
+
     const nav = document.createElement("nav");
     nav.className = "sidebar-nav";
     nav.setAttribute("aria-label", "Primary navigation");
@@ -118,7 +135,7 @@ export function initAppShell(options: {
     footer.innerHTML = `
       <div class="sidebar-user">
         <div class="sidebar-user-name">${escapeHtml(options.user.fullName)}</div>
-        <div class="sidebar-user-meta">${escapeHtml(options.user.role === "admin" ? "Administrator" : "Member Account")}</div>
+        <div class="sidebar-user-meta">${escapeHtml(options.user.role === "admin" ? "Administrator View" : "Member Portal View")}</div>
       </div>
     `;
 
@@ -129,7 +146,7 @@ export function initAppShell(options: {
       createElement(LogOut, { class: "nav-icon", "aria-hidden": "true" }),
     );
     const btnText = document.createElement("span");
-    btnText.textContent = "Sign Out";
+    btnText.textContent = "Account Sign In";
     logoutBtn.appendChild(btnText);
     logoutBtn.addEventListener("click", () => {
       void logoutAccount();
@@ -163,8 +180,52 @@ export function initAppShell(options: {
     titleEl.className = "topbar-title";
     titleEl.textContent = options.pageTitle;
 
+    const roleSwitcher = document.createElement("div");
+    roleSwitcher.className = "role-switcher-group";
+    roleSwitcher.setAttribute("role", "group");
+    roleSwitcher.setAttribute("aria-label", "Switch portal view");
+
+    const adminSwitchBtn = document.createElement("button");
+    adminSwitchBtn.type = "button";
+    adminSwitchBtn.className = `role-switch-btn${options.user.role === "admin" ? " active" : ""}`;
+    adminSwitchBtn.appendChild(
+      createElement(Shield, { class: "nav-icon", "aria-hidden": "true" }),
+    );
+    adminSwitchBtn.appendChild(document.createTextNode("Admin View"));
+    adminSwitchBtn.addEventListener("click", () => {
+      if (options.user.role !== "admin") {
+        void switchViewMode("admin");
+      }
+    });
+
+    const memberSwitchBtn = document.createElement("button");
+    memberSwitchBtn.type = "button";
+    memberSwitchBtn.className = `role-switch-btn${options.user.role === "member" ? " active" : ""}`;
+    memberSwitchBtn.appendChild(
+      createElement(User, { class: "nav-icon", "aria-hidden": "true" }),
+    );
+    memberSwitchBtn.appendChild(document.createTextNode("Member View"));
+    memberSwitchBtn.addEventListener("click", () => {
+      if (options.user.role !== "member") {
+        void switchViewMode("member");
+      }
+    });
+
+    roleSwitcher.appendChild(adminSwitchBtn);
+    roleSwitcher.appendChild(memberSwitchBtn);
+
+    const topPortfolioBtn = document.createElement("a");
+    topPortfolioBtn.href = PORTFOLIO_URL;
+    topPortfolioBtn.className = "topbar-portfolio-btn";
+    topPortfolioBtn.appendChild(
+      createElement(ArrowLeft, { class: "nav-icon", "aria-hidden": "true" }),
+    );
+    topPortfolioBtn.appendChild(document.createTextNode("Portfolio"));
+
     topbarLeft.appendChild(menuBtn);
     topbarLeft.appendChild(titleEl);
+    topbarLeft.appendChild(roleSwitcher);
+    topbarLeft.appendChild(topPortfolioBtn);
   }
 
   realtimeClient.connect();

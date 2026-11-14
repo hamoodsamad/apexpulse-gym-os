@@ -9,10 +9,14 @@ import {
 import { showToast } from "../ui/toast.ts";
 
 async function initLoginPage(): Promise<void> {
-  const existingUser = await getCurrentUser();
-  if (existingUser) {
-    redirectAfterAuth(existingUser);
-    return;
+  const isManualSwitch =
+    new URLSearchParams(window.location.search).get("switch") === "1";
+  if (!isManualSwitch) {
+    const existingUser = await getCurrentUser();
+    if (existingUser) {
+      redirectAfterAuth(existingUser);
+      return;
+    }
   }
 
   const setupSection = document.getElementById("admin-setup-section");
@@ -140,5 +144,3 @@ async function initLoginPage(): Promise<void> {
     }
   });
 }
-
-void initLoginPage();
