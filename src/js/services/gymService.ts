@@ -56,6 +56,22 @@ export async function setMemberStatus(
   });
 }
 
+export async function freezeMember(
+  memberId: string,
+): Promise<{ remainingDays: number; frozenAt: string }> {
+  return apiRequest(`/api/members/${encodeURIComponent(memberId)}/freeze`, {
+    method: "POST",
+  });
+}
+
+export async function unfreezeMember(
+  memberId: string,
+): Promise<{ remainingDays: number; expiryDate: string }> {
+  return apiRequest(`/api/members/${encodeURIComponent(memberId)}/unfreeze`, {
+    method: "POST",
+  });
+}
+
 export async function deleteMember(memberId: string): Promise<void> {
   await apiRequest(`/api/members/${encodeURIComponent(memberId)}`, {
     method: "DELETE",

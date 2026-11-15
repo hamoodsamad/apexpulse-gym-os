@@ -2,7 +2,10 @@ import {
   ArrowLeft,
   ClipboardCheck,
   CreditCard,
+  Eye,
+  EyeOff,
   Fingerprint,
+  KeyRound,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -14,8 +17,14 @@ import {
   createElement,
 } from "lucide";
 import type { AuthUser } from "../types.ts";
-import { logoutAccount, switchViewMode } from "../services/authService.ts";
+import {
+  changePassword,
+  logoutAccount,
+  switchViewMode,
+} from "../services/authService.ts";
 import { realtimeClient } from "../services/realtimeClient.ts";
+import { closeModal, openModal, wireModalDismiss } from "./modals.ts";
+import { showToast } from "./toast.ts";
 import { escapeHtml } from "../utils/formatters.ts";
 
 const PORTFOLIO_URL =
@@ -76,6 +85,105 @@ const MEMBER_NAV_LINKS: NavLinkDef[] = [
   },
 ];
 
+export function wirePasswordToggles(
+  root: Document | HTMLElement = document,
+): void {
+  const buttons = root.querySelectorAll<HTMLButtonElement>(
+    "[data-toggle-password]",
+  );
+  for (const btn of buttons) {
+    if (btn.dataset.wired === "1") continue;
+    btn.dataset.wired = "1";
+    btn.innerHTML = "";
+    btn.appendChild(createElement(Eye, { "aria-hidden": "true" }));
+
+    btn.addEventListener("click", () => {
+      const targetId = btn.dataset.togglePassword;
+      if (!targetId) return;
+      const input = document.getElementById(
+        targetId,
+      ) as HTMLInputElement | null;
+      if (!input) return;
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.setAttribute(
+        "aria-label",
+        isHidden ? "Hide password" : "Show password",
+      );
+      btn.innerHTML = "";
+      btn.appendChild(
+        createElement(isHidden ? EyeOff : Eye, { "aria-hidden": "true" }),
+      );
+    });
+  }
+}
+
+function ensureChangePasswordModal(): void {
+  if (document.getElementById("global-change-password-modal")) return;
+
+  const modal = document.createElement("div");
+  modal.id = "global-change-password-modal";
+  modal.className = "modal-overlay hidden";
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "chg-pwd-title");
+
+  modal.innerHTML = `
+    <div class="modal-panel">
+      <div class="modal-header">
+        <h2 id="chg-pwd-title" class="section-title">Change Account Password</h2>
+        <button type="button" class="btn btn-secondary btn-sm" data-close-modal>Close</button>
+      </div>
+      <form id="global-change-password-form" class="form-grid">
+        <div class="form-field form-field-full">
+          <label class="form-label" for="chg-current-pwd">Current Password</label>
+          <div class="password-field-wrap">
+            <input id="chg-current-pwd" name="currentPassword" type="password" class="form-input" required />
+            <button type="button" class="password-toggle-btn" data-toggle-password="chg-current-pwd" aria-label="Show password"></button>
+          </div>
+        </div>
+        <div class="form-field form-field-full">
+          <label class="form-label" for="chg-new-pwd">New Password (minimum 8 characters)</label>
+          <div class="password-field-wrap">
+            <input id="chg-new-pwd" name="newPassword" type="password" minlength="8" class="form-input" required />
+            <button type="button" class="password-toggle-btn" data-toggle-password="chg-new-pwd" aria-label="Show password"></button>
+          </div>
+        </div>
+        <div class="modal-footer form-field-full">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Update Password</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+  wireModalDismiss("global-change-password-modal");
+  wirePasswordToggles(modal);
+
+  const form = document.getElementById(
+    "global-change-password-form",
+  ) as HTMLFormElement | null;
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    try {
+      await changePassword(
+        String(fd.get("currentPassword") || ""),
+        String(fd.get("newPassword") || ""),
+      );
+      showToast("Password updated successfully", "success");
+      form.reset();
+      closeModal("global-change-password-modal");
+    } catch (err) {
+      showToast(
+        err instanceof Error ? err.message : "Unable to update password.",
+        "error",
+      );
+    }
+  });
+}
+
 export function initAppShell(options: {
   user: AuthUser;
   activeNavKey: string;
@@ -135,9 +243,32 @@ export function initAppShell(options: {
     footer.innerHTML = `
       <div class="sidebar-user">
         <div class="sidebar-user-name">${escapeHtml(options.user.fullName)}</div>
-        <div class="sidebar-user-meta">${escapeHtml(options.user.role === "admin" ? "Administrator View" : "Member Portal View")}</div>
+        <div class="sidebar-user-meta">${escapeHtml(
+          options.user.isDemo
+            ? "Read-Only Portfolio Demo"
+            : options.user.role === "admin"
+              ? "Administrator (Full Access)"
+              : "Member Account",
+        )}</div>
       </div>
     `;
+
+    if (!options.user.isDemo) {
+      ensureChangePasswordModal();
+      const chgPwdBtn = document.createElement("button");
+      chgPwdBtn.type = "button";
+      chgPwdBtn.className = "btn btn-ghost btn-sm";
+      chgPwdBtn.appendChild(
+        createElement(KeyRound, { class: "nav-icon", "aria-hidden": "true" }),
+      );
+      const chgTxt = document.createElement("span");
+      chgTxt.textContent = "Change Password";
+      chgPwdBtn.appendChild(chgTxt);
+      chgPwdBtn.addEventListener("click", () => {
+        openModal("global-change-password-modal");
+      });
+      footer.appendChild(chgPwdBtn);
+    }
 
     const logoutBtn = document.createElement("button");
     logoutBtn.type = "button";
@@ -146,7 +277,9 @@ export function initAppShell(options: {
       createElement(LogOut, { class: "nav-icon", "aria-hidden": "true" }),
     );
     const btnText = document.createElement("span");
-    btnText.textContent = "Account Sign In";
+    btnText.textContent = options.user.isDemo
+      ? "Admin / Member Login"
+      : "Sign Out";
     logoutBtn.appendChild(btnText);
     logoutBtn.addEventListener("click", () => {
       void logoutAccount();
@@ -228,5 +361,21 @@ export function initAppShell(options: {
     topbarLeft.appendChild(topPortfolioBtn);
   }
 
+  if (options.user.isDemo && !document.getElementById("demo-readonly-banner")) {
+    const mainViewport = document.querySelector(".main-viewport");
+    const topbar = mainViewport?.querySelector(".topbar");
+    if (mainViewport && topbar) {
+      const banner = document.createElement("div");
+      banner.id = "demo-readonly-banner";
+      banner.className = "demo-readonly-banner";
+      banner.innerHTML = `
+        <span>Portfolio Preview (Read-Only Demo): Visitors can explore all pages &amp; analytics, while adding, editing, or deleting is locked.</span>
+        <a href="/index-login.html?switch=1" class="btn btn-secondary btn-sm">Admin Sign In</a>
+      `;
+      topbar.insertAdjacentElement("afterend", banner);
+    }
+  }
+
+  wirePasswordToggles(document);
   realtimeClient.connect();
 }

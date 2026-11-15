@@ -14,11 +14,13 @@ import {
   fetchMemberDetail,
   fetchMembers,
   fetchPackages,
+  freezeMember,
   setMemberStatus,
+  unfreezeMember,
   updateMember,
 } from "../services/gymService.ts";
 import { realtimeClient } from "../services/realtimeClient.ts";
-import { initAppShell } from "../ui/layout.ts";
+import { initAppShell, wirePasswordToggles } from "../ui/layout.ts";
 import { closeModal, openModal, wireModalDismiss } from "../ui/modals.ts";
 import { showToast } from "../ui/toast.ts";
 import type { MemberSummary, PackageItem, PlanDuration } from "../types.ts";
@@ -116,12 +118,24 @@ function renderMembersTable(): void {
           <td class="mono">${sub ? escapeHtml(formatDate(sub.expiryDate)) : "—"}</td>
           <td>
             <span class="${statusTagClass(m.status)}">${escapeHtml(formatStatusText(m.status))}</span>
-            <div class="section-subtitle">Payment: ${escapeHtml(formatStatusText(payStatus))} · Fingerprints: ${m.biometricCount}</div>
+            ${
+              sub?.status === "frozen"
+                ? `<div class="section-subtitle">Frozen (${Number(sub.frozenRemainingDays ?? 0)} days saved)</div>`
+                : `<div class="section-subtitle">Payment: ${escapeHtml(formatStatusText(payStatus))} · Fingerprints: ${m.biometricCount}</div>`
+            }
           </td>
           <td>
             <div class="toolbar-group">
               <button type="button" class="btn btn-secondary btn-sm" data-action="view" data-id="${escapeHtml(m.id)}">Profile</button>
               <button type="button" class="btn btn-secondary btn-sm" data-action="biometrics" data-id="${escapeHtml(m.id)}">Fingerprint</button>
+              ${
+                m.status === "active" && sub?.status === "active"
+                  ? `<button type="button" class="btn btn-secondary btn-sm" data-action="freeze" data-id="${escapeHtml(m.id)}">Freeze</button>`
+                  : m.status === "frozen" || sub?.status === "frozen"
+                    ? `<button type="button" class="btn btn-primary btn-sm" data-action="unfreeze" data-id="${escapeHtml(m.id)}">Unfreeze</button>`
+                    : ""
+              }
+              <button type="button" class="btn btn-danger btn-sm" data-action="delete" data-id="${escapeHtml(m.id)}">Delete</button>
             </div>
           </td>
         </tr>
@@ -144,6 +158,7 @@ async function openMemberProfileModal(memberId: string): Promise<void> {
     const activeSub = detail.subscriptions[0] as
       | Record<string, unknown>
       | undefined;
+    const isFrozen = m.status === "frozen" || activeSub?.status === "frozen";
 
     content.innerHTML = `
       <div class="profile-kv-grid">
@@ -152,7 +167,13 @@ async function openMemberProfileModal(memberId: string): Promise<void> {
         <div class="kv-item"><div class="kv-label">Phone Number</div><div class="kv-value mono">${escapeHtml(m.phone)}</div></div>
         <div class="kv-item"><div class="kv-label">Age</div><div class="kv-value mono">${m.age}</div></div>
         <div class="kv-item"><div class="kv-label">Account Status</div><div class="kv-value"><span class="${statusTagClass(m.status)}">${escapeHtml(formatStatusText(m.status))}</span></div></div>
-        <div class="kv-item"><div class="kv-label">Latest Expiry</div><div class="kv-value mono">${activeSub ? escapeHtml(formatDate(String(activeSub.expiry_date))) : "—"}</div></div>
+        <div class="kv-item"><div class="kv-label">${isFrozen ? "Saved Frozen Days" : "Latest Expiry"}</div><div class="kv-value mono">${
+          isFrozen
+            ? `${Number(activeSub?.frozen_remaining_days ?? 0)} days saved`
+            : activeSub
+              ? escapeHtml(formatDate(String(activeSub.expiry_date)))
+              : "—"
+        }</div></div>
       </div>
 
       <form id="edit-member-form" class="form-grid mt-16">
@@ -174,6 +195,13 @@ async function openMemberProfileModal(memberId: string): Promise<void> {
         </div>
         <div class="form-field-full toolbar-group">
           <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+          ${
+            m.status === "active" && activeSub?.status === "active"
+              ? '<button type="button" id="modal-freeze-btn" class="btn btn-secondary btn-sm">Freeze Membership</button>'
+              : isFrozen
+                ? '<button type="button" id="modal-unfreeze-btn" class="btn btn-primary btn-sm">Unfreeze Membership</button>'
+                : ""
+          }
           <button type="button" id="toggle-suspend-btn" class="btn btn-secondary btn-sm">
             ${m.status === "suspended" ? "Reactivate Membership" : "Suspend Membership"}
           </button>
@@ -268,6 +296,44 @@ async function openMemberProfileModal(memberId: string): Promise<void> {
     });
 
     document
+      .getElementById("modal-freeze-btn")
+      ?.addEventListener("click", async () => {
+        try {
+          const res = await freezeMember(m.id);
+          showToast(
+            `Membership frozen (${res.remainingDays} days saved)`,
+            "success",
+          );
+          closeModal("member-profile-modal");
+          await loadData();
+        } catch (err) {
+          showToast(
+            err instanceof Error ? err.message : "Freeze failed",
+            "error",
+          );
+        }
+      });
+
+    document
+      .getElementById("modal-unfreeze-btn")
+      ?.addEventListener("click", async () => {
+        try {
+          const res = await unfreezeMember(m.id);
+          showToast(
+            `Membership unfrozen until ${formatDate(res.expiryDate)}`,
+            "success",
+          );
+          closeModal("member-profile-modal");
+          await loadData();
+        } catch (err) {
+          showToast(
+            err instanceof Error ? err.message : "Unfreeze failed",
+            "error",
+          );
+        }
+      });
+
+    document
       .getElementById("toggle-suspend-btn")
       ?.addEventListener("click", async () => {
         try {
@@ -294,6 +360,10 @@ async function openMemberProfileModal(memberId: string): Promise<void> {
     document
       .getElementById("delete-member-btn")
       ?.addEventListener("click", async () => {
+        if (
+          !window.confirm(`Delete member ${m.fullName}? This cannot be undone.`)
+        )
+          return;
         try {
           await deleteMember(m.id);
           showToast("Member deleted", "success");
@@ -392,6 +462,7 @@ async function initMembersPage(): Promise<void> {
     pageTitle: "Member Directory & Biometric Enrollment",
   });
 
+  wirePasswordToggles(document);
   wireModalDismiss("register-member-modal");
   wireModalDismiss("member-profile-modal");
   wireModalDismiss("biometric-enroll-modal");
@@ -482,15 +553,63 @@ async function initMembersPage(): Promise<void> {
 
   document
     .getElementById("members-table-body")
-    ?.addEventListener("click", (e) => {
+    ?.addEventListener("click", async (e) => {
       const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
         "[data-action]",
       );
       if (!btn || !btn.dataset.id) return;
+      const id = btn.dataset.id;
+
       if (btn.dataset.action === "view") {
-        void openMemberProfileModal(btn.dataset.id);
+        void openMemberProfileModal(id);
       } else if (btn.dataset.action === "biometrics") {
-        void openBiometricEnrollModal(btn.dataset.id);
+        void openBiometricEnrollModal(id);
+      } else if (btn.dataset.action === "freeze") {
+        try {
+          const res = await freezeMember(id);
+          showToast(
+            `Account frozen (${res.remainingDays} remaining days saved)`,
+            "success",
+          );
+          await loadData();
+        } catch (err) {
+          showToast(
+            err instanceof Error ? err.message : "Freeze failed.",
+            "error",
+          );
+        }
+      } else if (btn.dataset.action === "unfreeze") {
+        try {
+          const res = await unfreezeMember(id);
+          showToast(
+            `Account unfrozen! Resumed until ${formatDate(res.expiryDate)}`,
+            "success",
+          );
+          await loadData();
+        } catch (err) {
+          showToast(
+            err instanceof Error ? err.message : "Unfreeze failed.",
+            "error",
+          );
+        }
+      } else if (btn.dataset.action === "delete") {
+        const target = allMembers.find((m) => m.id === id);
+        if (
+          !window.confirm(
+            `Delete member ${target?.fullName || ""}? This cannot be undone.`,
+          )
+        )
+          return;
+        try {
+          await deleteMember(id);
+          showToast("Member deleted", "success");
+          await loadData();
+        } catch (err) {
+          showToast(
+            err instanceof Error ? err.message : "Delete failed.",
+            "error",
+          );
+        }
       }
     });
 

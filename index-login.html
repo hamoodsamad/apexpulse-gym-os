@@ -8,12 +8,6 @@
       name="description"
       content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
     />
-    <meta property="og:title" content="ApexPulse Gym OS" />
-    <meta
-      property="og:description"
-      content="Cloud-connected multi-device Gym Management System with biometric fingerprint hardware integration, custom subscription packages, payment ledger, and Admin/Member portals."
-    />
-    <meta property="og:type" content="website" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,6 +23,11 @@
       <section class="auth-hero-panel">
         <div>
           <div class="sidebar-brand">ApexPulse Gym OS</div>
+          <a
+            href="https://my-portfolio-czuhuqnne-hamoodsamad0321-6526.vercel.app"
+            class="portfolio-back-link"
+            >← Back to Portfolio</a
+          >
         </div>
         <div>
           <h1>Facility Operations, Biometric Access &amp; Member Billing</h1>
@@ -86,15 +85,23 @@
                 <label class="form-label" for="setup-password"
                   >Password (minimum 8 characters)</label
                 >
-                <input
-                  id="setup-password"
-                  name="password"
-                  type="password"
-                  minlength="8"
-                  class="form-input"
-                  required
-                  autocomplete="new-password"
-                />
+                <div class="password-field-wrap">
+                  <input
+                    id="setup-password"
+                    name="password"
+                    type="password"
+                    minlength="8"
+                    class="form-input"
+                    required
+                    autocomplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle-btn"
+                    data-toggle-password="setup-password"
+                    aria-label="Show password"
+                  ></button>
+                </div>
               </div>
               <div class="form-field form-field-full">
                 <button type="submit" class="btn btn-primary">
@@ -122,13 +129,20 @@
               >
                 Member Sign Up
               </button>
+              <button
+                id="tab-forgot-btn"
+                type="button"
+                class="segment-btn"
+                role="tab"
+              >
+                Forgot Password
+              </button>
             </div>
 
             <div id="login-panel" class="mt-16">
               <h2 class="section-title">Sign In to Your Account</h2>
               <p class="section-subtitle">
-                Administrators and Members sign in using their registered
-                credentials.
+                Sign in for full Administrator or Member editing access.
               </p>
               <form id="login-form" class="form-grid mt-16">
                 <div class="form-field form-field-full">
@@ -148,17 +162,32 @@
                   <label class="form-label" for="login-password"
                     >Password</label
                   >
-                  <input
-                    id="login-password"
-                    name="password"
-                    type="password"
-                    class="form-input"
-                    required
-                    autocomplete="current-password"
-                  />
+                  <div class="password-field-wrap">
+                    <input
+                      id="login-password"
+                      name="password"
+                      type="password"
+                      class="form-input"
+                      required
+                      autocomplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      data-toggle-password="login-password"
+                      aria-label="Show password"
+                    ></button>
+                  </div>
                 </div>
                 <div class="form-field form-field-full">
                   <button type="submit" class="btn btn-primary">Sign In</button>
+                  <button
+                    id="demo-preview-btn"
+                    type="button"
+                    class="btn btn-secondary"
+                  >
+                    View Read-Only Dashboard Demo
+                  </button>
                 </div>
               </form>
             </div>
@@ -220,19 +249,95 @@
                   <label class="form-label" for="reg-password"
                     >Password (min 8 characters)</label
                   >
-                  <input
-                    id="reg-password"
-                    name="password"
-                    type="password"
-                    minlength="8"
-                    class="form-input"
-                    required
-                    autocomplete="new-password"
-                  />
+                  <div class="password-field-wrap">
+                    <input
+                      id="reg-password"
+                      name="password"
+                      type="password"
+                      minlength="8"
+                      class="form-input"
+                      required
+                      autocomplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      data-toggle-password="reg-password"
+                      aria-label="Show password"
+                    ></button>
+                  </div>
                 </div>
                 <div class="form-field form-field-full">
                   <button type="submit" class="btn btn-primary">
                     Register Member Account
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <div id="forgot-panel" class="hidden mt-16">
+              <h2 class="section-title">Reset Forgotten Password</h2>
+              <p class="section-subtitle">
+                Members verify with registered phone number; Administrators
+                verify with Recovery Key.
+              </p>
+              <form id="forgot-form" class="form-grid mt-16">
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="forgot-email"
+                    >Registered Email Address</label
+                  >
+                  <input
+                    id="forgot-email"
+                    name="email"
+                    type="email"
+                    class="form-input"
+                    required
+                  />
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="forgot-secret"
+                    >Registered Phone (Member) or Recovery Key (Admin)</label
+                  >
+                  <div class="password-field-wrap">
+                    <input
+                      id="forgot-secret"
+                      name="verificationSecret"
+                      type="password"
+                      class="form-input"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      data-toggle-password="forgot-secret"
+                      aria-label="Show password"
+                    ></button>
+                  </div>
+                </div>
+                <div class="form-field form-field-full">
+                  <label class="form-label" for="forgot-new-password"
+                    >New Password (min 8 characters)</label
+                  >
+                  <div class="password-field-wrap">
+                    <input
+                      id="forgot-new-password"
+                      name="newPassword"
+                      type="password"
+                      minlength="8"
+                      class="form-input"
+                      required
+                    />
+                    <button
+                      type="button"
+                      class="password-toggle-btn"
+                      data-toggle-password="forgot-new-password"
+                      aria-label="Show password"
+                    ></button>
+                  </div>
+                </div>
+                <div class="form-field form-field-full">
+                  <button type="submit" class="btn btn-primary">
+                    Reset Password
                   </button>
                 </div>
               </form>

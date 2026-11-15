@@ -32,6 +32,13 @@
         <header class="topbar">
           <div id="topbar-left" class="topbar-left"></div>
           <div class="topbar-actions">
+            <button
+              id="toggle-kiosk-btn"
+              type="button"
+              class="btn btn-primary btn-sm"
+            >
+              Dedicated Kiosk Mode
+            </button>
             <a href="/index-members.html" class="btn btn-secondary btn-sm"
               >Enroll Fingerprints</a
             >
@@ -39,6 +46,20 @@
         </header>
 
         <main class="page-content">
+          <div class="kiosk-exit-bar">
+            <strong
+              >ApexPulse Check-In Kiosk Terminal — Ready for Fingerprint
+              Scan</strong
+            >
+            <button
+              id="exit-kiosk-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Exit Kiosk Mode
+            </button>
+          </div>
+
           <div id="hardware-capability-status" class="info-banner">
             Detecting biometric hardware capabilities...
           </div>
@@ -125,7 +146,7 @@
                   <h2 class="section-title">Verification Result</h2>
                   <p class="section-subtitle">
                     Automatic member identification, subscription validation,
-                    and attendance check-in
+                    freeze auto-resume, and attendance check-in
                   </p>
                 </div>
               </div>

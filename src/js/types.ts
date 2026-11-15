@@ -12,6 +12,7 @@ export interface AuthUser {
   role: UserRole;
   fullName: string;
   memberId: string | null;
+  isDemo?: boolean;
 }
 
 export interface ServiceItem {
@@ -43,6 +44,8 @@ export interface MemberSubscriptionSummary {
   expiryDate: string;
   status: string;
   paymentStatus: string;
+  frozenAt?: string | null;
+  frozenRemainingDays?: number;
 }
 
 export interface MemberSummary {
@@ -53,7 +56,7 @@ export interface MemberSummary {
   email: string;
   phone: string;
   age: number;
-  status: "active" | "expired" | "suspended" | "pending";
+  status: "active" | "expired" | "suspended" | "pending" | "frozen";
   notes: string;
   biometricCount: number;
   activeSubscription: MemberSubscriptionSummary | null;
@@ -76,6 +79,8 @@ export interface ScanVerificationResult {
   statusLabel: string;
   reason: string;
   deviceLabel: string;
+  daysRemaining?: number;
+  wasAutoResumed?: boolean;
   member: {
     id: string;
     memberCode: string;

@@ -76,6 +76,9 @@
                 <button type="button" class="segment-btn" data-status="active">
                   Active
                 </button>
+                <button type="button" class="segment-btn" data-status="frozen">
+                  Frozen
+                </button>
                 <button type="button" class="segment-btn" data-status="expired">
                   Expired
                 </button>
@@ -185,14 +188,22 @@
             <label class="form-label" for="reg-m-password"
               >Member Portal Password (Optional)</label
             >
-            <input
-              id="reg-m-password"
-              name="accountPassword"
-              type="password"
-              minlength="8"
-              class="form-input"
-              placeholder="Min 8 chars for portal login"
-            />
+            <div class="password-field-wrap">
+              <input
+                id="reg-m-password"
+                name="accountPassword"
+                type="password"
+                minlength="8"
+                class="form-input"
+                placeholder="Min 8 chars for portal login"
+              />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                data-toggle-password="reg-m-password"
+                aria-label="Show password"
+              ></button>
+            </div>
           </div>
           <div class="form-field">
             <label class="form-label" for="reg-m-notes">Notes (Optional)</label>

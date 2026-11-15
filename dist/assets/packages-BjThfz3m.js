@@ -1,4 +1,4 @@
-import"./components-CVxSCubC.js";import{r as P,i as $,a as w,w as D,s as n,x as C,y as L,z as M,A,B,n as T,e as i,k as v}from"./toast-DjTol1G8.js";import{w as h,o as S,c as E}from"./modals-DzvRu_L9.js";let y=[],b=[],g=null;function N(){const e=document.getElementById("services-table-body");if(e){if(y.length===0){e.innerHTML='<tr><td colspan="4" class="empty-state">No services defined yet.</td></tr>';return}e.innerHTML=y.map(t=>`
+import{r as P,i as $,t as h,a as w,u as S,s as n,v as E,e as i,h as v}from"./layout-Iys708Ms.js";import{k as D,l as C,m as L,n as M,o as A,p as B,d as T}from"./gymService-C6eyi2AL.js";let y=[],b=[],g=null;function N(){const e=document.getElementById("services-table-body");if(e){if(y.length===0){e.innerHTML='<tr><td colspan="4" class="empty-state">No services defined yet.</td></tr>';return}e.innerHTML=y.map(t=>`
       <tr>
         <td><strong>${i(t.name)}</strong></td>
         <td>${i(t.description||"—")}</td>

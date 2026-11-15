@@ -77,6 +77,27 @@ export async function switchViewMode(role: "admin" | "member"): Promise<void> {
   redirectAfterAuth(user);
 }
 
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> {
+  await apiRequest("/api/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
+}
+
+export async function forgotResetPassword(
+  email: string,
+  verificationSecret: string,
+  newPassword: string,
+): Promise<void> {
+  await apiRequest("/api/auth/forgot-reset-password", {
+    method: "POST",
+    body: JSON.stringify({ email, verificationSecret, newPassword }),
+  });
+}
+
 export async function logoutAccount(): Promise<void> {
   try {
     await apiRequest("/api/auth/logout", { method: "POST" });

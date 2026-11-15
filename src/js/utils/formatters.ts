@@ -76,6 +76,8 @@ export function statusTagClass(status: string): string {
     case "pending":
     case "pending_approval":
       return "status-tag status-warning";
+    case "frozen":
+      return "status-tag status-frozen";
     default:
       return "status-tag status-neutral";
   }

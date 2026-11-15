@@ -1,14 +1,19 @@
 import {
+  enterDemoRole,
   fetchAuthStatus,
+  forgotResetPassword,
   getCurrentUser,
   loginAccount,
   redirectAfterAuth,
   registerMemberAccount,
   setupInitialAdmin,
 } from "../services/authService.ts";
+import { wirePasswordToggles } from "../ui/layout.ts";
 import { showToast } from "../ui/toast.ts";
 
 async function initLoginPage(): Promise<void> {
+  wirePasswordToggles(document);
+
   const isManualSwitch =
     new URLSearchParams(window.location.search).get("switch") === "1";
   if (!isManualSwitch) {
@@ -23,8 +28,10 @@ async function initLoginPage(): Promise<void> {
   const authTabsSection = document.getElementById("auth-tabs-section");
   const loginPanel = document.getElementById("login-panel");
   const registerPanel = document.getElementById("register-panel");
+  const forgotPanel = document.getElementById("forgot-panel");
   const tabLoginBtn = document.getElementById("tab-login-btn");
   const tabRegisterBtn = document.getElementById("tab-register-btn");
+  const tabForgotBtn = document.getElementById("tab-forgot-btn");
   const errorBox = document.getElementById("auth-error-box");
   const dbEngineText = document.getElementById("db-engine-note");
 
@@ -38,6 +45,16 @@ async function initLoginPage(): Promise<void> {
     if (!errorBox) return;
     errorBox.textContent = "";
     errorBox.classList.add("hidden");
+  };
+
+  const activateTab = (tab: "login" | "register" | "forgot"): void => {
+    clearError();
+    tabLoginBtn?.classList.toggle("active", tab === "login");
+    tabRegisterBtn?.classList.toggle("active", tab === "register");
+    tabForgotBtn?.classList.toggle("active", tab === "forgot");
+    loginPanel?.classList.toggle("hidden", tab !== "login");
+    registerPanel?.classList.toggle("hidden", tab !== "register");
+    forgotPanel?.classList.toggle("hidden", tab !== "forgot");
   };
 
   try {
@@ -64,21 +81,23 @@ async function initLoginPage(): Promise<void> {
     );
   }
 
-  tabLoginBtn?.addEventListener("click", () => {
-    clearError();
-    tabLoginBtn.classList.add("active");
-    tabRegisterBtn?.classList.remove("active");
-    loginPanel?.classList.remove("hidden");
-    registerPanel?.classList.add("hidden");
-  });
+  tabLoginBtn?.addEventListener("click", () => activateTab("login"));
+  tabRegisterBtn?.addEventListener("click", () => activateTab("register"));
+  tabForgotBtn?.addEventListener("click", () => activateTab("forgot"));
 
-  tabRegisterBtn?.addEventListener("click", () => {
-    clearError();
-    tabRegisterBtn.classList.add("active");
-    tabLoginBtn?.classList.remove("active");
-    registerPanel?.classList.remove("hidden");
-    loginPanel?.classList.add("hidden");
-  });
+  document
+    .getElementById("demo-preview-btn")
+    ?.addEventListener("click", async () => {
+      clearError();
+      try {
+        const user = await enterDemoRole("admin");
+        redirectAfterAuth(user);
+      } catch (err) {
+        showError(
+          err instanceof Error ? err.message : "Unable to start demo preview.",
+        );
+      }
+    });
 
   const setupForm = document.getElementById(
     "admin-setup-form",
@@ -143,4 +162,27 @@ async function initLoginPage(): Promise<void> {
       showError(err instanceof Error ? err.message : "Registration failed.");
     }
   });
+
+  const forgotForm = document.getElementById(
+    "forgot-form",
+  ) as HTMLFormElement | null;
+  forgotForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    clearError();
+    const formData = new FormData(forgotForm);
+    try {
+      await forgotResetPassword(
+        String(formData.get("email") || ""),
+        String(formData.get("verificationSecret") || ""),
+        String(formData.get("newPassword") || ""),
+      );
+      showToast("Password has been reset. You can now sign in.", "success");
+      forgotForm.reset();
+      activateTab("login");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Password reset failed.");
+    }
+  });
 }
+
+void initLoginPage();

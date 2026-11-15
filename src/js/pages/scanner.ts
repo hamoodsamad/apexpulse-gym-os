@@ -28,24 +28,35 @@ function renderScanResult(result: ScanVerificationResult): void {
 
   let bannerClass = "result-danger";
   let symbol = "✕";
+  let verdictWord = result.statusLabel;
+
   if (result.verificationResult === "valid") {
     bannerClass = "result-valid";
     symbol = "✓";
+    verdictWord = result.wasAutoResumed ? "VALID · RESUMED" : "VALID";
   } else if (result.verificationResult === "suspended") {
     bannerClass = "result-warning";
     symbol = "!";
   }
 
+  const remainingText =
+    result.verificationResult === "valid"
+      ? `${Number(result.daysRemaining ?? 0)} days left`
+      : result.verificationResult === "expired"
+        ? "0 days (Expired)"
+        : "—";
+
   container.innerHTML = `
-    <div class="scan-result-banner ${bannerClass}">
-      <div class="toolbar-group">
-        <span class="scan-status-icon" aria-hidden="true">${symbol}</span>
-        <div>
-          <h2 class="section-title">${escapeHtml(result.statusLabel)} — ${escapeHtml(result.member.fullName)}</h2>
-          <p class="section-subtitle">${escapeHtml(result.reason)}</p>
-        </div>
+    <div class="scan-photo-replacement ${bannerClass}">
+      <div>
+        <h2 class="section-title">${escapeHtml(result.member.fullName)} (${escapeHtml(result.member.memberCode)})</h2>
+        <p class="section-subtitle">${escapeHtml(result.reason)}</p>
+        <div class="section-subtitle mono mt-12">Scanned: ${escapeHtml(formatDateTime(result.scannedAt))}</div>
       </div>
-      <div class="mono">${escapeHtml(formatDateTime(result.scannedAt))}</div>
+      <div class="scan-verdict-stamp" aria-label="Verification status">
+        <span aria-hidden="true">${symbol}</span>
+        <span>${escapeHtml(verdictWord)}</span>
+      </div>
     </div>
 
     <div class="profile-kv-grid">
@@ -54,12 +65,12 @@ function renderScanResult(result: ScanVerificationResult): void {
         <div class="kv-value">${escapeHtml(result.member.fullName)}</div>
       </div>
       <div class="kv-item">
-        <div class="kv-label">Phone Number</div>
-        <div class="kv-value mono">${escapeHtml(result.member.phone)}</div>
-      </div>
-      <div class="kv-item">
         <div class="kv-label">Age</div>
         <div class="kv-value mono">${result.member.age} yrs</div>
+      </div>
+      <div class="kv-item">
+        <div class="kv-label">Phone Number</div>
+        <div class="kv-value mono">${escapeHtml(result.member.phone)}</div>
       </div>
       <div class="kv-item">
         <div class="kv-label">Subscription Plan</div>
@@ -72,16 +83,24 @@ function renderScanResult(result: ScanVerificationResult): void {
         </div>
       </div>
       <div class="kv-item">
-        <div class="kv-label">Payment Status</div>
+        <div class="kv-label">Subscribed Date (Start)</div>
+        <div class="kv-value mono">${result.subscription ? escapeHtml(formatDate(result.subscription.startDate)) : "—"}</div>
+      </div>
+      <div class="kv-item">
+        <div class="kv-label">Expiry Date</div>
+        <div class="kv-value mono">${result.subscription ? escapeHtml(formatDate(result.subscription.expiryDate)) : "—"}</div>
+      </div>
+      <div class="kv-item">
+        <div class="kv-label">Remaining Subscription</div>
+        <div class="kv-value mono">${escapeHtml(remainingText)}</div>
+      </div>
+      <div class="kv-item">
+        <div class="kv-label">Fee / Payment Status</div>
         <div class="kv-value">
           <span class="${statusTagClass(result.payment?.status || "unpaid")}">
             ${escapeHtml(formatStatusText(result.payment?.status || "unpaid"))}
           </span>
         </div>
-      </div>
-      <div class="kv-item">
-        <div class="kv-label">Expiry Date</div>
-        <div class="kv-value mono">${result.subscription ? escapeHtml(formatDate(result.subscription.expiryDate)) : "—"}</div>
       </div>
     </div>
   `;
@@ -152,6 +171,26 @@ async function initScannerPage(): Promise<void> {
     activeNavKey: "scanner",
     pageTitle: "Fingerprint Hardware Verification Terminal",
   });
+
+  const toggleKiosk = (enable: boolean): void => {
+    document.body.classList.toggle("kiosk-mode", enable);
+    if (enable && document.documentElement.requestFullscreen) {
+      void document.documentElement.requestFullscreen().catch(() => {});
+    } else if (
+      !enable &&
+      document.fullscreenElement &&
+      document.exitFullscreen
+    ) {
+      void document.exitFullscreen().catch(() => {});
+    }
+  };
+
+  document
+    .getElementById("toggle-kiosk-btn")
+    ?.addEventListener("click", () => toggleKiosk(true));
+  document
+    .getElementById("exit-kiosk-btn")
+    ?.addEventListener("click", () => toggleKiosk(false));
 
   const capBanner = document.getElementById("hardware-capability-status");
   if (capBanner) {

@@ -20,11 +20,11 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@600;700&family=Public+Sans:wght@400;500;600&display=swap"
     />
-    <script type="module" crossorigin src="/assets/scanner-DgOUs2k2.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/components-CVxSCubC.js">
-    <link rel="modulepreload" crossorigin href="/assets/toast-DjTol1G8.js">
-    <link rel="modulepreload" crossorigin href="/assets/biometricService-Bfdo8dqZ.js">
-    <link rel="stylesheet" crossorigin href="/assets/components-Kh0djqIw.css">
+    <script type="module" crossorigin src="/assets/scanner-Byb3OPdh.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/layout-Iys708Ms.js">
+    <link rel="modulepreload" crossorigin href="/assets/biometricService-Dv5uUPpu.js">
+    <link rel="modulepreload" crossorigin href="/assets/gymService-C6eyi2AL.js">
+    <link rel="stylesheet" crossorigin href="/assets/layout-C1mrsStC.css">
   </head>
   <body>
     <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
@@ -34,6 +34,13 @@
         <header class="topbar">
           <div id="topbar-left" class="topbar-left"></div>
           <div class="topbar-actions">
+            <button
+              id="toggle-kiosk-btn"
+              type="button"
+              class="btn btn-primary btn-sm"
+            >
+              Dedicated Kiosk Mode
+            </button>
             <a href="/index-members.html" class="btn btn-secondary btn-sm"
               >Enroll Fingerprints</a
             >
@@ -41,6 +48,20 @@
         </header>
 
         <main class="page-content">
+          <div class="kiosk-exit-bar">
+            <strong
+              >ApexPulse Check-In Kiosk Terminal — Ready for Fingerprint
+              Scan</strong
+            >
+            <button
+              id="exit-kiosk-btn"
+              type="button"
+              class="btn btn-secondary btn-sm"
+            >
+              Exit Kiosk Mode
+            </button>
+          </div>
+
           <div id="hardware-capability-status" class="info-banner">
             Detecting biometric hardware capabilities...
           </div>
@@ -127,7 +148,7 @@
                   <h2 class="section-title">Verification Result</h2>
                   <p class="section-subtitle">
                     Automatic member identification, subscription validation,
-                    and attendance check-in
+                    freeze auto-resume, and attendance check-in
                   </p>
                 </div>
               </div>
